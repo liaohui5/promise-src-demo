@@ -4,7 +4,6 @@
 // 1. 默认3个状态, 默认pending, 状态改变后, 状态不可逆
 // 2. 如果是异步执行 resolve 的, 收集异步回调函数到收集, 等待 resolve 执行的时候, 就立即执行所有异步回调
 
-
 const PENDING = "pending";
 const RESOLVED = "resolved";
 const REJECTED = "rejected";
@@ -68,7 +67,7 @@ class Commitment {
 
     // pending
     // 如果状态是 pending 的时候, 说明 executor 中没有立即改变
-    // 状态(也就是说: resolve / reject 没有立即执行)
+    // 状态(也就是说 executor 中的 resolve / reject 没有立即执行)
     // 使用发布订阅的模式: 保存异步回调, 当 resolve/reject 执行
     // 的时候触发所有回调函数执行
     if (this.status === PENDING) {
@@ -99,7 +98,7 @@ class Commitment {
 }
 
 // 1. 默认是 pending 状态, 改变状态后, 无法再次修改
-const c = new MyPromise((resolve, reject) => {
+const p = new MyPromise((resolve, reject) => {
   // const c = new Promise((resolve, reject) => {
   setTimeout(() => {
     resolve(11);
@@ -108,7 +107,7 @@ const c = new MyPromise((resolve, reject) => {
 });
 
 // 依次执行异步回调
-c.then(
+p.then(
   (val) => {
     console.log("then-resolve-1:", val);
   },
@@ -117,7 +116,7 @@ c.then(
   }
 );
 
-c.then(
+p.then(
   (val) => {
     console.log("then-resolve-2:", val);
   },
